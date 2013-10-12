@@ -39,7 +39,11 @@ double GetSecondNonZeroValue(double);
 double GetThirdNonZeroValue(double);
 double GetFourthNonZeroValue(double);
 double GetFifthNonZeroValue(double);
-double GetExactValue(double);			
+double GetSixthNonZeroValue(double);
+double GetExactValue(double);
+double GetExactPercentError(double,double);
+double GetTruncationPercentError(double,double);
+
 
 /****************************************************************************************************
 Function name:		main
@@ -61,7 +65,8 @@ int main(void)
 			GetSecondNonZeroValue,
 			GetThirdNonZeroValue,
 			GetFourthNonZeroValue,
-			GetFifthNonZeroValue
+			GetFifthNonZeroValue,
+			GetSixthNonZeroValue
 		};
 
 	int input = 0;		// user selection
@@ -113,12 +118,12 @@ int main(void)
 			cout<<setw(13)<<"  x"<<setw(15)<<"Series"<<setw(15)<<"Exact"<<setw(15)<<"Exact % Error"<<setw(15)<<" Trunc. % Error"<<endl;
 
 			// Use nested for loop to evaulate each range for the amount of terms requested
-			for (double x = 0;x < range;x += (range/10.0f))
+			for (double x = 0;x <= range;x += range/10)
 			{
 				double result = 0; // Stores total result of Maclaurin Series
-				
+				int t=0;
 				// Evaluate the series to the amount of terms requested
-				for (int t=0; t<terms; t++)
+				for (t=0; t<terms; t++)
 				{	
 					// t stores the index of the function to use and the value of x is passed into each function
 					result += seriesFunctions[t](x);
@@ -126,8 +131,11 @@ int main(void)
 				// Format output to scientific format(exponential).
 				// Adjust decimal place using setprecision()
 				cout<<setiosflags(ios::scientific);
-				cout<<setw(13)<<setprecision(3)<<x<<setw(15)<<setprecision(5)<<result;
-				cout<<setw(15)<<setprecision(5)<<GetExactValue(x)<<endl;
+				cout<<setw(13)<<setprecision(3)<<x;
+				cout<<setw(15)<<setprecision(5)<<result;
+				cout<<setw(15)<<setprecision(5)<<GetExactValue(x);
+				cout<<setw(15)<<setprecision(5)<<GetExactPercentError(result,GetExactValue(x));
+				cout<<setw(15)<<setprecision(5)<<GetTruncationPercentError(seriesFunctions[t](x),result)<<endl;
 			}
 			cout <<endl<< "Evaluate the Taylor Series approximation to exp(-t)*cos(t)" << endl;
 			cout <<endl<< "1: Evaluate the series" << endl;
@@ -148,7 +156,7 @@ Author:				Thom Palmer
 ****************************************************************************************************/
 double GetFirstNonZeroValue(double t)
 {
-	double firstTermValue = 1.0f;
+	double firstTermValue = 1.0;
 	return firstTermValue;
 }
 /****************************************************************************************************
@@ -174,7 +182,7 @@ Author:				Thom Palmer
 ****************************************************************************************************/
 double GetThirdNonZeroValue(double t)
 {
-	double thirdTermValue = t*t*t/3.0f;
+	double thirdTermValue = t*t*t/3.0;
 	return thirdTermValue;
 }
 /****************************************************************************************************
@@ -187,7 +195,7 @@ Author:				Thom Palmer
 ****************************************************************************************************/
 double GetFourthNonZeroValue(double t)
 {
-	double fourthTermValue = -t*t*t*t/6.0f;
+	double fourthTermValue = -t*t*t*t/6.0;
 	return fourthTermValue;
 }
 /****************************************************************************************************
@@ -200,7 +208,7 @@ Author:				Thom Palmer
 ****************************************************************************************************/
 double GetFifthNonZeroValue(double t)
 {
-	double fifthTermValue = t*t*t*t*t/30.0f;
+	double fifthTermValue = t*t*t*t*t/30.0;
 	return fifthTermValue;
 }
 /****************************************************************************************************
@@ -213,7 +221,7 @@ Author:				Thom Palmer
 ****************************************************************************************************/
 double GetSixthNonZeroValue(double t)
 {
-	double sixthTermValue = t*t*t*t*t*t/630.0f;
+	double sixthTermValue = -(t*t*t*t*t*t*t)/630.0;
 	return sixthTermValue;
 }
 /****************************************************************************************************
@@ -239,15 +247,19 @@ Author:				Thom Palmer
 ****************************************************************************************************/
 double GetExactPercentError(double approxSeriesValue, double exactSeriesValue)
 {
-	double exactPercentError = exactSeriesValue - exactSeriesValue;
+	double exactPercentError = (exactSeriesValue - approxSeriesValue)/exactSeriesValue;
 	return exactPercentError;
 }
 /****************************************************************************************************
-Function name:		GetExactValue
-Purpose:			Returns the exact value of the expression using the math libray
-In parameters:		Current value of t
+Function name:		GetTruncationPercentError
+Purpose:			Calculates the truncation percentage error
+In parameters:		nextNonZeroValue, approxSeriesValue
 Out parameters:		exactValue
 Version:			1.0
 Author:				Thom Palmer
 ****************************************************************************************************/
-
+double GetTruncationPercentError(double nextNonZeroValue, double approxSeriesValue)
+{
+	double truncationPercentError = (nextNonZeroValue/approxSeriesValue)*100;
+	return truncationPercentError;
+}
