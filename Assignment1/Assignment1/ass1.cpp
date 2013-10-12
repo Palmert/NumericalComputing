@@ -1,4 +1,7 @@
+
 #include <iostream>
+#define _USE_MATH_DEFINES // for C++
+#include <cmath>
 #include <math.h>
 
 using namespace std;
@@ -7,58 +10,65 @@ typedef double (*MaclaurinSeriesFunctions)(double t);
 
 
 
-double firstTerm( double t)
+double getFirstNonZeroValue( double t)
 {
 	double firstTermValue = 1.0f;
 	return firstTermValue;
 }
-double secondTerm(double t)
+double getSecondNonZeroValue(double t)
 {
 	double secondTermValue = -t;
 	return secondTermValue;
 }
-double thirdTerm(double t)
+double getThirdNonZeroValue(double t)
 {
 	double thirdTermValue = (((double)pow(t,3.0f))/3.0f);
 	return thirdTermValue;
 }
-double fourthTerm(double t)
+double getFourthNonZeroValue(double t)
 {
 	double fourthTermValue = -(((double)pow(t,4.0f))/6.0f);
 	return fourthTermValue;
 }
-double fifthTerm(double t)
+double getFifthNonZeroValue(double t)
 {
 	double fifthTermValue = (((double)pow(t,5.0f))/30.0f);
 	return fifthTermValue;
 }
 
 
+double getExactValue(double t)
+{
+	double exactValue = exp(-t)*cos(t);
+	return exactValue;
+}
+			
+
 
 int main(void)
 {
 	MaclaurinSeriesFunctions seriesFunctions [] = 
 		{ 
-			firstTerm,
-			secondTerm,
-			thirdTerm,
-			fourthTerm,
-			fifthTerm
+			getFirstNonZeroValue,
+			getSecondNonZeroValue,
+			getThirdNonZeroValue,
+			getFourthNonZeroValue,
+			getFifthNonZeroValue
 		};
 	int input = 0;
 	int terms;
 	double range;
 
-	while (input != 2)
-	{
+	
 		terms = 0;
 		range = 0;
 
-		cout << "Evalutate the Taylor Series approximation to exp(-t)*cos(t)" << endl;
+		cout << "Evaluate the Taylor Series approximation to exp(-t)*cos(t)" << endl;
 		cout << "1: Evaluate the series" << endl;
-		cout << "2: quit\n";
+		cout << "2: quit" << endl;
 		cin  >>  input;
-
+	while (input != 2)
+	{
 		if(input == 1)
 		{
 			cout << "Evaluating the series" << endl;
@@ -85,18 +95,20 @@ int main(void)
 				continue;
 			}
 			
-			for (double j = 0;j < range; j += 0.2)
+			for (double j = 0;j < range; j += (range *0.1))
 			{
-				double result = 0.0f;
+			double result = 0.0f;
 			for (int i=0; i<terms; i++)
 			{	
 				result += seriesFunctions[i](j);
 			}		
 			cout << result<<endl;
+			cout << getExactValue(j)<<endl;
 			}
-			cin >> range;
-			break;
-
+			cout <<endl<< "Evaluate the Taylor Series approximation to exp(-t)*cos(t)" << endl;
+			cout <<endl<< "1: Evaluate the series" << endl;
+			cout << "2: quit" <<endl;
+			cin  >>  input;
 		}
 	}
 	return 0;
