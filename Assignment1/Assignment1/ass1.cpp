@@ -27,9 +27,7 @@ Purpose: 					Evaluates the advantage of using the Maclaurin series approximatio
 							to a gust of wind.
 ****************************************************************************************************/
 #include <iostream>
-#ifndef _USE_MATH_DEFINES
-#define _USE_MATH_DEFINES 
-#endif
+#include <iomanip>
 #include <math.h>
 using namespace std;
 
@@ -56,6 +54,7 @@ Author:				Thom Palmer
 int main(void)
 {
 	// Create an array of function pointers.
+	// Each functions represents a non zero term in the series
 	MaclaurinSeriesFunctions seriesFunctions [] = 
 		{ 
 			GetFirstNonZeroValue, 
@@ -65,9 +64,9 @@ int main(void)
 			GetFifthNonZeroValue
 		};
 
-	int input;		// user selection
-	int terms;		// number of terms to evaluate		
-	double range;	// amount to increase each evaluation
+	int input = 0;		// user selection
+	int terms = 0;		// number of terms to evaluate		
+	double range = 0;	// amount to increase each evaluation
 
 	// Display options to user
 	cout << "Evaluate the Taylor Series approximation to exp(-t)*cos(t)" << endl;
@@ -107,20 +106,28 @@ int main(void)
 				continue;
 			}
 			
-			// Use nested for loop to evaulate each range and for the amount of terms requested
-			for (double r = 0;r < range; r += (range/10))
+			// Set output alignment left and display table title and headers
+			cout<<setiosflags(ios::left);
+			cout<<endl<<"MACLAURIN SERIES"<<endl;
+			// Use setw() to format columns
+			cout<<setw(13)<<"  x"<<setw(15)<<"Series"<<setw(15)<<"Exact"<<setw(15)<<"Exact % Error"<<setw(15)<<" Trunc. % Error"<<endl;
+
+			// Use nested for loop to evaulate each range for the amount of terms requested
+			for (double x = 0;x < range;x += (range/10.0f))
 			{
-				double result; // Stores total result of Maclaurin Series
+				double result = 0; // Stores total result of Maclaurin Series
 				
 				// Evaluate the series to the amount of terms requested
 				for (int t=0; t<terms; t++)
 				{	
-					// t Stores the index of the function to use and the value of r is passed into each function
-					result += seriesFunctions[t](r);
+					// t stores the index of the function to use and the value of x is passed into each function
+					result += seriesFunctions[t](x);
 				}
-
-				cout << result<<endl;
-				cout << GetExactValue(r)<<endl;
+				// Format output to scientific format(exponential).
+				// Adjust decimal place using setprecision()
+				cout<<setiosflags(ios::scientific);
+				cout<<setw(13)<<setprecision(3)<<x<<setw(15)<<setprecision(5)<<result;
+				cout<<setw(15)<<setprecision(5)<<GetExactValue(x)<<endl;
 			}
 			cout <<endl<< "Evaluate the Taylor Series approximation to exp(-t)*cos(t)" << endl;
 			cout <<endl<< "1: Evaluate the series" << endl;
@@ -132,13 +139,12 @@ int main(void)
 }
 
 /****************************************************************************************************
-Function name:		main
-Purpose:			main function
-					Allows user to select options in order to maintain the student database
-In parameters:		none
-Out parameters:		0 for successful execution
+Function name:		GetFirstNonZeroValue
+Purpose:			Returns the value of the first non zero term in the series
+In parameters:		Current value of t
+Out parameters:		firstTermValue
 Version:			1.0
-Author:				Andrew Tyler
+Author:				Thom Palmer
 ****************************************************************************************************/
 double GetFirstNonZeroValue(double t)
 {
@@ -146,13 +152,12 @@ double GetFirstNonZeroValue(double t)
 	return firstTermValue;
 }
 /****************************************************************************************************
-Function name:		main
-Purpose:			main function
-					Allows user to select options in order to maintain the student database
-In parameters:		none
-Out parameters:		0 for successful execution
+Function name:		GetSecondNonZeroValue
+Purpose:			Returns the value of the second non zero term in the series
+In parameters:		Current value of t
+Out parameters:		secondTermValue
 Version:			1.0
-Author:				Andrew Tyler
+Author:				Thom Palmer
 ****************************************************************************************************/
 double GetSecondNonZeroValue(double t)
 {
@@ -160,58 +165,89 @@ double GetSecondNonZeroValue(double t)
 	return secondTermValue;
 }
 /****************************************************************************************************
-Function name:		main
-Purpose:			main function
-					Allows user to select options in order to maintain the student database
-In parameters:		none
-Out parameters:		0 for successful execution
+Function name:		GetThirdNonZeroValue
+Purpose:			Returns the value of the third non zero term in the series
+In parameters:		Current value of t
+Out parameters:		thirdTermValue
 Version:			1.0
-Author:				Andrew Tyler
+Author:				Thom Palmer
 ****************************************************************************************************/
 double GetThirdNonZeroValue(double t)
 {
-	double thirdTermValue = (((double)pow(t,3.0f))/3.0f);
+	double thirdTermValue = t*t*t/3.0f;
 	return thirdTermValue;
 }
 /****************************************************************************************************
-Function name:		main
-Purpose:			main function
-					Allows user to select options in order to maintain the student database
-In parameters:		none
-Out parameters:		0 for successful execution
+Function name:		GetFourthNonZeroValue
+Purpose:			Returns the value of the fourth non zero term in the series
+In parameters:		Current value of t
+Out parameters:		fourthTermValue
 Version:			1.0
-Author:				Andrew Tyler
+Author:				Thom Palmer
 ****************************************************************************************************/
 double GetFourthNonZeroValue(double t)
 {
-	double fourthTermValue = -(((double)pow(t,4.0f))/6.0f);
+	double fourthTermValue = -t*t*t*t/6.0f;
 	return fourthTermValue;
 }
 /****************************************************************************************************
-Function name:		main
-Purpose:			main function
-					Allows user to select options in order to maintain the student database
-In parameters:		none
-Out parameters:		0 for successful execution
+Function name:		GetFifthNonZeroValue
+Purpose:			Returns the value of the fifth non zero term in the series
+In parameters:		Current value of t
+Out parameters:		fifthTermValue
 Version:			1.0
-Author:				Andrew Tyler
+Author:				Thom Palmer
 ****************************************************************************************************/
 double GetFifthNonZeroValue(double t)
 {
-	double fifthTermValue = (((double)pow(t,5.0f))/30.0f);
+	double fifthTermValue = t*t*t*t*t/30.0f;
 	return fifthTermValue;
 }
 /****************************************************************************************************
-Function name:		main
-Purpose:			main function
-					Allows user to select options in order to maintain the student database
-In parameters:		none
-Out parameters:		0 for successful execution
+Function name:		GetSixthNonZeroValue
+Purpose:			Returns the value of the sixth non zero term in the series
+In parameters:		Current value of t
+Out parameters:		sixthTermValue
 Version:			1.0
-Author:				Andrew Tyler
+Author:				Thom Palmer
+****************************************************************************************************/
+double GetSixthNonZeroValue(double t)
+{
+	double sixthTermValue = t*t*t*t*t*t/630.0f;
+	return sixthTermValue;
+}
+/****************************************************************************************************
+Function name:		GetExactValue
+Purpose:			Returns the exact value of the expression using the math libray
+In parameters:		Current value of t
+Out parameters:		exactValue
+Version:			1.0
+Author:				Thom Palmer
 ****************************************************************************************************/
 double GetExactValue(double t)
 {
 	double exactValue = exp(-t)*cos(t);
 	return exactValue;
 }
+/****************************************************************************************************
+Function name:		GetExactPercentError
+Purpose:			Calculates the exact percentage error
+In parameters:		approxSeriesValue, exactSeriesValue
+Out parameters:		exactValue
+Version:			1.0
+Author:				Thom Palmer
+****************************************************************************************************/
+double GetExactPercentError(double approxSeriesValue, double exactSeriesValue)
+{
+	double exactPercentError = exactSeriesValue - exactSeriesValue;
+	return exactPercentError;
+}
+/****************************************************************************************************
+Function name:		GetExactValue
+Purpose:			Returns the exact value of the expression using the math libray
+In parameters:		Current value of t
+Out parameters:		exactValue
+Version:			1.0
+Author:				Thom Palmer
+****************************************************************************************************/
+
